@@ -1,0 +1,90 @@
+services:
+  authentication-service:
+    build: ./authentication-service
+    container_name: authentication-service
+    ports:
+      - "8081:8080"
+    environment:
+      APIDOCS_PATH: /v3/api-docs
+      DB_PASSWORD: ${AUTH_DB_PASSWORD}
+      DB_URL: ${AUTH_DB_URL}
+      DB_USER: ${AUTH_DB_USER}
+      FORWARD_HEADERS_STRATEGY: FRAMEWORK
+      HIBERNATE_TIME_ZONE: UTC
+      JPA_HBM2DDL_AUTO: validate
+      JPA_OPEN_IN_VIEW: false
+      JPA_SHOW_SQL: false
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ACCESS_TOKEN_TTL_SECONDS: 3600
+      JWT_REFRESH_TOKEN_TTL_SECONDS: 604800
+      LOGGING_PATTERN_CONSOLE: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+      LOGIN_RATE_LIMIT: 5
+      MVC_PROBLEMDTLS_ENABLED: true
+      PORT: 8080
+      SECURITY_HSTS_ENABLED: true
+      SPRING_PROFILES_ACTIVE: prod
+      SWAGGER_UI_PATH: /swagger-ui.html
+      WEB_ERROR_INCLUDE_STACKTRACE: never
+
+  shipment-service:
+    build: ./shipment-service
+    container_name: shipment-service
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: ${SHIPMENT_DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${SHIPMENT_DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${SHIPMENT_DB_PASSWORD}
+      SPRING_RABBITMQ_HOST: ${RABBITMQ_HOST}
+      SPRING_RABBITMQ_PORT: ${RABBITMQ_PORT}
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USER}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      SPRING_RABBITMQ_VHOST: ${RABBITMQ_VHOST}
+      SPRING_RABBITMQ_SSL_ENABLED: true
+
+  tracking-service:
+    build: ./tracking-service
+    container_name: tracking-service
+    ports:
+      - "8083:8080"
+    environment:
+      PORT: 8083
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: ${TRACKING_DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${TRACKING_DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${TRACKING_DB_PASSWORD}
+      SPRING_RABBITMQ_HOST: ${RABBITMQ_HOST}
+      SPRING_RABBITMQ_PORT: ${RABBITMQ_PORT}
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USER}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      SPRING_RABBITMQ_VHOST: ${RABBITMQ_VHOST}
+      SPRING_RABBITMQ_SSL_ENABLED: true
+
+  gateway-service:
+    build: ./gateway-service
+    container_name: gateway-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - authentication-service
+      - shipment-service
+      - tracking-service
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      PROD_AUTH_SERVICE_URL: http://authentication-service:8080
+      PROD_SHIPMENT_SERVICE_URL: http://shipment-service:8080
+      PROD_TRACKING_SERVICE_URL: http://tracking-service:8083  
+      PROD_UI_ORIGIN: http://localhost:3000
+      JWT_SECRET_PROD: ${JWT_SECRET}
+
+  ui-service:
+    build:
+      context: ./ui-service
+      args:
+        VITE_API_GATEWAY_URL: http://localhost:8080
+    container_name: ui-service
+    ports:
+      - "3000:80"
+    depends_on:
+      - gateway-service  

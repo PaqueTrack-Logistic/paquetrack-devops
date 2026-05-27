@@ -1,0 +1,24 @@
+# Archivos de entorno (NUNCA subir!)
+.env
+.env.local
+.env.*.local
+
+# Carpetas de microservicios (están en otros repositorios)
+authentication-service/
+gateway-service/
+tracking-service/
+shipment-service/
+ui-service/
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
