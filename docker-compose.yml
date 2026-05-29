@@ -49,7 +49,7 @@ services:
     ports:
       - "8083:8080"
     environment:
-      PORT: 8083
+      PORT: 8080
       SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: ${TRACKING_DB_URL}
       SPRING_DATASOURCE_USERNAME: ${TRACKING_DB_USER}
@@ -74,7 +74,7 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       PROD_AUTH_SERVICE_URL: http://authentication-service:8080
       PROD_SHIPMENT_SERVICE_URL: http://shipment-service:8080
-      PROD_TRACKING_SERVICE_URL: http://tracking-service:8083  
+      PROD_TRACKING_SERVICE_URL: http://tracking-service:8080  
       PROD_UI_ORIGIN: http://localhost:3000
       JWT_SECRET_PROD: ${JWT_SECRET}
 
