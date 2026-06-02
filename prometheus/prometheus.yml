@@ -2,27 +2,30 @@ global:
   scrape_interval: 15s
 
 scrape_configs:
-
-  - job_name: 'gateway-service'
-    metrics_path: '/actuator/prometheus'
-    static_configs:
-      - targets:
-          - gateway-service:8080
-
   - job_name: 'authentication-service'
     metrics_path: '/actuator/prometheus'
+    scheme: https
     static_configs:
       - targets:
-          - authentication-service:8080
+          - authentication-service-mr3y.onrender.com
 
   - job_name: 'shipment-service'
     metrics_path: '/actuator/prometheus'
+    scheme: https
     static_configs:
       - targets:
-          - shipment-service:8080
+          - shipment-service-sena.onrender.com
 
   - job_name: 'tracking-service'
     metrics_path: '/actuator/prometheus'
+    scheme: https
     static_configs:
       - targets:
-          - tracking-service:8080
+          - tracking-hq1g.onrender.com
+
+  - job_name: 'gateway-service'
+    metrics_path: '/actuator/prometheus' 
+    scheme: https
+    static_configs:
+      - targets:
+          - gateway-service-hql9.onrender.com
