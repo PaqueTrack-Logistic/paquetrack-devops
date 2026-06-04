@@ -65,9 +65,13 @@ kind load docker-image ui-service:latest --name desktop
 
 ## Paso 4 — Llenar secrets.yml con las credenciales reales
 
-Edita `k8s/secrets.yml` y reemplaza todos los valores
-`TU_PASSWORD`, `TU_USER`, etc. con los valores reales de tu `.env`
+## Configuración de Secrets
 
+Por motivos de seguridad, el archivo `secret.yml` no se encuentra en el repositorio.
+
+1. Copie `secret-template.yml`.
+2. Renómbrelo a `secret.yml`.
+3. Reemplace los valores de ejemplo por las credenciales reales.
 ---
 
 ## Paso 5 — Crear el namespace
